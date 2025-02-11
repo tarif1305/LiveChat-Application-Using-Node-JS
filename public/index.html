@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Live Chat Application</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        justify-content: space-between;
+        background-color: #ece5dd;
+        background-image: url("/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png");
+        background-size: cover;
+        background-position: center;
+      }
+
+      header {
+        background-color: #075e54;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      footer {
+        background-color: #075e54;
+        color: white;
+        padding: 10px;
+        text-align: center;
+        font-size: 14px;
+      }
+
+      #chatContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+      }
+
+      #messages {
+        list-style-type: none;
+        padding: 10px;
+        flex-grow: 1;
+        overflow-y: auto;
+      }
+
+      #messages li {
+        padding: 10px;
+        margin: 10px;
+        max-width: 80%;
+        border-radius: 10px;
+        clear: both;
+      }
+
+      .sent {
+        background-color: #dcf8c6;
+        align-self: flex-end;
+        text-align: right;
+      }
+
+      .received {
+        background-color: white;
+        align-self: flex-start;
+      }
+
+      #messageInputContainer {
+        display: flex;
+        padding: 10px;
+        background-color: #fff;
+        align-items: center;
+      }
+
+      #messageInput {
+        flex-grow: 1;
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 20px;
+        outline: none;
+        background-color: #f0f0f0;
+      }
+
+      #sendButton {
+        background-color: #25d366;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        margin-left: 10px;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      #file {
+        margin-left: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>Live Chat Application</header>
+
+    <div id="chatContainer">
+      <ul id="messages"></ul>
+
+      <div id="messageInputContainer">
+        <input
+          id="messageInput"
+          autocomplete="off"
+          placeholder="Type a message..."
+        />
+        <button id="sendButton">Send</button>
+        <input type="file" id="file" />
+      </div>
+    </div>
+
+    <footer>Prepared By Md. Tarif Hossain (1282700)</footer>
+
+    <script type="module">
+      import { io } from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js";
+
+      const username = prompt("Enter your name:", "User");
+      const socket = io();
+
+      socket.emit("start", username);
+
+      const messages = document.getElementById("messages");
+      const messageInput = document.getElementById("messageInput");
+      const sendButton = document.getElementById("sendButton");
+      const inputFile = document.getElementById("file");
+
+      function sendMessage() {
+        const message = messageInput.value;
+        if (message.trim() !== "") {
+          socket.emit("chat message", message);
+          messageInput.value = "";
+        }
+      }
+
+      sendButton.addEventListener("click", () => {
+        sendMessage();
+      });
+
+      inputFile.addEventListener("change", (ev) => {
+        sendFile(ev.target.files[0]);
+      });
+
+      document.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+          sendMessage();
+        }
+      });
+
+      socket.on("chat message", (sender, msg) => {
+        const item = document.createElement("li");
+        item.textContent = sender + " : " + msg;
+        item.classList.add(sender === username ? "sent" : "received");
+        messages.appendChild(item);
+        messages.scrollTop = messages.scrollHeight; // Auto-scroll to bottom
+      });
+
+      socket.on("file share", (sender, fileData) => {
+        const item = document.createElement("li");
+        const object = document.createElement("object");
+        object.setAttribute("data", fileData);
+        object.style.width = "100px";
+        object.style.height = "100px";
+        item.textContent = sender + " : ";
+        item.appendChild(object);
+        item.classList.add(sender === username ? "sent" : "received");
+        messages.appendChild(item);
+        messages.scrollTop = messages.scrollHeight; // Auto-scroll to bottom
+      });
+
+      function sendFile(file) {
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+          socket.emit("file share", reader.result);
+        };
+        reader.onerror = function (error) {
+          console.log("Error: ", error);
+        };
+      }
+    </script>
+  </body>
+</html>
