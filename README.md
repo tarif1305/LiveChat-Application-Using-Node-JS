@@ -1,47 +1,35 @@
-🗨️ Real-Time Chat App with File Sharing
-This is a real-time chat application built using Node.js, Express, and Socket.IO. It supports live messaging and file sharing between users over WebSockets.
+# 🗨️ Real-Time Chat App with File Sharing
 
-🚀 Features
-Real-time messaging with WebSockets
+This is a real-time chat application built using **Node.js**, **Express**, and **Socket.IO**. It supports live messaging and file sharing between users over WebSockets.
 
-File sharing capability
+## 🚀 Features
 
-User connection/disconnection notifications
+- Real-time messaging with WebSockets
+- File sharing capability
+- User connection/disconnection notifications
+- Clean server-side logging
+- Static frontend served from `/public` directory
 
-Clean server-side logging
+- ## 📦 Installation
 
-Static frontend served from /public directory
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/chat-app.git
+   cd chat-app
+   
 
-📂 Project Structure
-cpp
-Copy
-Edit
-/public
-  └── index.html         // Frontend UI
-server.js                // Main backend logic (the code you shared)
-📦 Installation
-Clone the repository:
+2.npm install
+  
+3.node server.js
 
-bash
-Copy
-Edit
-git clone https://github.com/your-username/chat-app.git
-cd chat-app
-Install dependencies:
+4.http://localhost:8000
 
-bash
-Copy
-Edit
-npm install
-Start the server:
+🛠 Technologies Used
 
-bash
-Copy
-Edit
-node server.js
-Open your browser:
+Node.js
 
-arduino
-Copy
-Edit
-http://localhost:8000
+Express.js
+
+Socket.IO
+
+HTML/CSS/JavaScript
